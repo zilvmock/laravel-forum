@@ -10,6 +10,10 @@
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="{{ asset('/css/trix.css') }}">
+        <link rel="stylesheet" href="{{ (request()->is('dashboard/edit-profile')) ? asset('/css/trix-custom.css') : '' }}">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -26,6 +30,7 @@
 
             <!-- Page Content -->
             <main>
+                <x-flash-message-success/>
                 {{ $slot }}
             </main>
         </div>

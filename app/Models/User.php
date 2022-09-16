@@ -12,13 +12,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-//    protected $fillable = [
-//        'firstname',
-//        'lastname',
-//        'username',
-//        'email',
-//        'password',
-//    ];
+    protected $fillable = ['first_name', 'last_name', 'username', 'email', 'bio'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -37,5 +31,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'username_changed_at' => 'datetime',
     ];
 }
