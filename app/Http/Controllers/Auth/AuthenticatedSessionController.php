@@ -10,39 +10,40 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create()
-    {
-        return view('auth.login');
-    }
-    /**
-     * Handle an incoming authentication request.
-     *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(LoginRequest $request)
-    {
-        $request->authenticate();
+  public function create()
+  {
+    return view('auth.login');
+  }
 
-        $request->session()->regenerate();
+  /**
+   * Handle an incoming authentication request.
+   *
+   * @param \App\Http\Requests\Auth\LoginRequest $request
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function store(LoginRequest $request)
+  {
+    $request->authenticate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
-    }
+    $request->session()->regenerate();
 
-    /**
-     * Destroy an authenticated session.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Request $request)
-    {
-        Auth::guard('web')->logout();
+    return redirect()->intended(RouteServiceProvider::HOME);
+  }
 
-        $request->session()->invalidate();
+  /**
+   * Destroy an authenticated session.
+   *
+   * @param \Illuminate\Http\Request $request
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function destroy(Request $request)
+  {
+    Auth::guard('web')->logout();
 
-        $request->session()->regenerateToken();
+    $request->session()->invalidate();
 
-        return redirect('/');
-    }
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+  }
 }

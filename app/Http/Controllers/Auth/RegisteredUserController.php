@@ -13,36 +13,35 @@ use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
-    // Return register form
-    public function create()
-    {
-        return view('auth.register');
-    }
+  // Return register form
+  public function create()
+  {
+    return view('auth.register');
+  }
 
-    // Register
-    public function store(Request $request)
-    {
-        $request->validate([
-            'firstname' => ['required', 'string', 'max:255'],
-            'lastname' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:150'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-//            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'password' => ['required', 'confirmed'],
-        ]);
+  // Register
+  public function store(Request $request)
+  {
+    $request->validate([
+      'firstname' => ['required', 'string', 'max:255'],
+      'lastname' => ['required', 'string', 'max:255'],
+      'username' => ['required', 'string', 'max:150'],
+      'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+      'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-        $user = User::create([
-            'first_name' => $request->firstname,
-            'last_name' => $request->lastname,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+      'first_name' => $request->firstname,
+      'last_name' => $request->lastname,
+      'username' => $request->username,
+      'email' => $request->email,
+      'password' => Hash::make($request->password),
+    ]);
 
-        event(new Registered($user));
+    event(new Registered($user));
 
-        Auth::login($user);
+    Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
-    }
+    return redirect(RouteServiceProvider::HOME);
+  }
 }
