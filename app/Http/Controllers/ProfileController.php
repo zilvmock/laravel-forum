@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Rules\PasswordIsTheSameInvokableRule;
 use App\Rules\PasswordMatchesInvokableRule;
 use App\Rules\UsernameCanBeChangedInvokableRule;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -39,16 +37,16 @@ class ProfileController extends Controller
     }
 
     $validator = Validator::make($request->all(), [
-      'first_name'            => ['required', 'max:255'],
-      'last_name'             => ['required', 'max:255'],
-      'avatar'                => ['mimes:jpeg,png', 'max:255', 'max:2048'],
-      'username'              => ['required', 'max:255', Rule::unique('users', 'username')
+      'first_name' => ['required', 'max:255'],
+      'last_name' => ['required', 'max:255'],
+      'avatar' => ['mimes:jpeg,png', 'max:255', 'max:2048'],
+      'username' => ['required', 'max:255', Rule::unique('users', 'username')
         ->ignore(auth()->user()->id, 'id'), new UsernameCanBeChangedInvokableRule],
-      'bio'                   => 'max:255',
-      'email'                 => ['required', 'email', 'max:255', Rule::unique('users', 'email')
+      'bio' => 'max:255',
+      'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')
         ->ignore(auth()->user()->id, 'id')],
-      'oldPassword'           => ['nullable', 'max:255', new PasswordMatchesInvokableRule],
-      'password'              => [Rule::excludeIf($request->oldPassword == null), 'min:8', 'max:255',
+      'oldPassword' => ['nullable', 'max:255', new PasswordMatchesInvokableRule],
+      'password' => [Rule::excludeIf($request->oldPassword == null), 'min:8', 'max:255',
         Rules\Password::defaults(), new PasswordIsTheSameInvokableRule],
       'password_confirmation' => [Rule::excludeIf($request->oldPassword == null), 'max:255', 'same:password',],
     ], [
@@ -66,7 +64,7 @@ class ProfileController extends Controller
       } else {
         $formFields = $request->except(['oldPassword', 'password', 'password_confirmation']);
       }
-      if($request->hasFile('avatar')) {
+      if ($request->hasFile('avatar')) {
         $user->avatar = $request->file('avatar')->store('avatars', 'public');
       }
       $user->update($formFields);

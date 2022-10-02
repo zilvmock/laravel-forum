@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use App\Models\User;
 use Illuminate\Contracts\Validation\InvokableRule;
 use Illuminate\Support\Facades\Hash;
 

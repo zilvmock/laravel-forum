@@ -26,6 +26,9 @@ Route::get('/', function () {
 Route::put('/dashboard/edit-profile/store', [ProfileController::class, 'updateProfile'])
   ->middleware(['auth'])->name('update-profile');
 
+Route::post('/like-article/{id}',[BrowseController::class,'likeArticle'])
+  ->middleware(['auth'])->name('likeArticle');
+
 // Return Views
 // *********************
 Route::get('/dashboard/profile', [ProfileController::class, 'showProfileView'])
@@ -36,6 +39,12 @@ Route::get('/dashboard/edit-profile', [ProfileController::class, 'showEditProfil
 
 Route::get('forum/browse', [BrowseController::class, 'showBrowseView'])
   ->middleware(['auth'])->name('browse');
+
+Route::get('forum/browse/{category:title}', [BrowseController::class, 'showCategoryView'])
+  ->middleware(['auth'])->name('browse-category');
+
+Route::get('forum/browse/{category:title}/{article:title}', [BrowseController::class, 'showArticleView'])
+  ->middleware(['auth'])->name('view-article');
 // *********************
 
 //Route::get('/trix', 'TrixController@index');

@@ -16,17 +16,8 @@ return new class extends Migration {
       $table->id();
       $table->string('title');
       $table->string('description');
-//            $table->integer('articles')->nullable();
-      //$table->integer('group_id');
       $table->timestamps();
       $table->foreignId('group_id')->constrained();
-//            // Constraints
-//            $table->foreign('articles')
-//                ->references('id')
-//                ->on('articles');
-      //$table->foreign('group_id')
-      //    ->references('id')
-      //    ->on('groups');
     });
   }
 

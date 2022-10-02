@@ -1,4 +1,4 @@
-<div class="tabs pl-8">
+<div class="tabs pl-8 pt-2">
   <a class="tab tab-lifted
        {{ (request()->segment(2) == 'profile') ? 'tab-active' : '' }}"
      href="{{route('profile')}}"

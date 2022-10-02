@@ -2,11 +2,11 @@
   <div class="flex-row">
     <x-navigation.nav-tabs-profile/>
     {{-- Profile Overview --}}
-    <x-layout.card class="p-8 mx-4">
+    <x-layout.card class="p-8 w-screen sm:w-full">
       {{--            <button class="btn btn-sm btn-ghost">--}}
       {{--                <a href="{{route('edit-profile')}}"><x-icons.heroicons.cog6/></a>--}}
       {{--            </button>--}}
-      <div class="sm:grid flex-col overflow-hidden grid-cols-3 grid-rows-2 gap-1">
+      <div class="md:grid flex-col overflow-hidden grid-cols-3 grid-rows-2 gap-1">
         <div class="row-span-2 text-center">
           <div class="avatar">
             <div class="w-48 rounded-full shadow-lg">

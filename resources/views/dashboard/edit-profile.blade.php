@@ -1,7 +1,7 @@
 <x-app-layout>
   <div class="flex-row">
     <x-navigation.nav-tabs-profile/>
-    <x-layout.card class="p-8 mx-4">
+    <x-layout.card class="p-8 sm:mx-4 mx-0">
       <form method="post" action="{{route('update-profile')}}" enctype="multipart/form-data">
         @method('PUT')
         @csrf
@@ -142,12 +142,17 @@
             @enderror
             {{-- Bio --}}
             <x-input.input-label class="mt-6 font-bold">Bio</x-input.input-label>
-            <div class="p-1">
-              <input id="x" type="hidden" name="bio" value="{{auth()->user()->bio}}"/>
-              <trix-editor input="x" class="trix-content max-h-40 max-w-2xl overflow-auto">
-                <script src="{{ asset('js/trix.js') }}"></script>
-              </trix-editor>
-            </div>
+{{--            <div class="p-1">--}}
+{{--              <input id="x" type="hidden" name="bio" value="{{auth()->user()->bio}}"/>--}}
+{{--              <trix-editor input="x" class="trix-content max-h-40 max-w-2xl overflow-auto">--}}
+{{--                <script src="{{ asset('js/trix.js') }}"></script>--}}
+{{--              </trix-editor>--}}
+{{--            </div>--}}
+            <x-tinymce.head.tinymce-config/>
+            <x-tinymce.forms.tinymce-editor>
+              <x-slot:name>bio</x-slot:name>
+              {{auth()->user()->bio}}
+            </x-tinymce.forms.tinymce-editor>
             @error('bio')
             <x-informative.error-message class="py-2 mt-2">{{$message}}</x-informative.error-message>
             @enderror

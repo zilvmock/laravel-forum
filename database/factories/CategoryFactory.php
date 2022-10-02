@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Article;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,9 +19,9 @@ class CategoryFactory extends Factory
   public function definition()
   {
     return [
-      'title' => fake()->title(),
-      'description' => fake()->text(100),
-      'group_id' => Group::factory()
+      'title' => fake()->text(rand(20, 100)),
+      'description' => fake()->text(rand(100, 200)),
+      'group_id' => Group::factory(),
     ];
   }
 }

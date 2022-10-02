@@ -1,19 +1,7 @@
 <x-app-layout>
-  {{-- Home Navbar --}}
-  <x-navigation.navbar-home>
-    <x-slot:title>
-      <x-icons.application-logo class="block h-10 w-auto fill-current text-white pr-2"/>
-      Interstartas
-    </x-slot:title>
-    <x-slot:navigation>
-      <li><a>About Us</a></li>
-      <li><a href="{{route('login')}}">Forum</a></li>
-    </x-slot:navigation>
-  </x-navigation.navbar-home>
-
   {{-- Hero 1--}}
   <x-informative.hero
-    class="hero h-96 w-auto rounded m-20 drop-shadow-md"
+    class="hero h-96 w-auto rounded m-20 drop-shadow-md w-5/6"
     style="background-image: url({{url('/images/hero-1.jpg')}});
            background-position: bottom;">
     <x-slot:content>
@@ -24,7 +12,7 @@
 
   {{-- Hero 2--}}
   <x-informative.hero
-    class="hero h-96 w-auto rounded m-20 drop-shadow-md"
+    class="hero h-96 w-auto rounded m-20 drop-shadow-md w-5/6"
     style="background-image: url({{url('/images/hero-2.jpg')}});">
     <x-slot:title>Join Our Forum</x-slot:title>
     <x-slot:content>

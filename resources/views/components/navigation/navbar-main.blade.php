@@ -1,4 +1,4 @@
-<div class="p-4">
+<div class="p-0 sm:p-4">
   <div class="navbar bg-base-100 shadow-md rounded">
     <div class="flex-1">
       <a href="{{ route('browse') }}" class="btn btn-ghost normal-case text-xl">
