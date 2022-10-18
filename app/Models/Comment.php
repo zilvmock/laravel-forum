@@ -9,7 +9,7 @@ class Comment extends Model
 {
   use HasFactory;
 
-  protected $fillable = ['content', 'up_votes', 'edited_at', 'article_id'];
+  protected $fillable = ['content', 'article_id', 'user_id', 'content_updated_at'];
 
   public function article()
   {
@@ -29,5 +29,10 @@ class Comment extends Model
     } else {
       return false;
     }
+  }
+
+  public function getLikes($id): int
+  {
+    return count(CommentLikes::all()->where('comment_id', '==', $id));
   }
 }

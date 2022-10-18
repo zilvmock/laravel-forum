@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -13,15 +14,19 @@ return new class extends Migration {
   public function up()
   {
     Schema::create('articles', function (Blueprint $table) {
-      $table->id();
+      $table->increments('id');
+      $table->unsignedInteger('user_id');
+      $table->unsignedInteger('category_id');
       $table->string('title');
-      $table->string('content');
+      $table->string('slug');
+      $table->longText('content');
       $table->string('tags')->nullable();
-//      $table->integer('up_votes')->default(0);
-      $table->timestamp('edited_at')->nullable();
+      $table->timestamp('content_updated_at')->nullable();
       $table->timestamps();
-      $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-      $table->foreignId('category_id')->constrained();
+//      $table->foreignId('user_id')->constrained();
+      $table->foreign('user_id')->references('id')->on('users');
+//      $table->foreignId('category_id')->constrained();
+      $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
     });
   }
 

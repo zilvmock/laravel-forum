@@ -13,13 +13,16 @@ return new class extends Migration {
   public function up()
   {
     Schema::create('comments', function (Blueprint $table) {
-      $table->id();
-      $table->string('content');
-//      $table->integer('up_votes')->default(0);
-      $table->timestamp('edited_at')->nullable();
+      $table->increments('id');
+      $table->unsignedInteger('user_id');
+      $table->unsignedInteger('article_id');
+      $table->longText('content');
+      $table->timestamp('content_updated_at')->nullable();
       $table->timestamps();
-      $table->foreignId('user_id')->constrained();
-      $table->foreignId('article_id')->constrained();
+//      $table->foreignId('user_id')->constrained();
+      $table->foreign('user_id')->references('id')->on('users');
+//      $table->foreignId('article_id')->constrained()->cascadeOnDelete();
+      $table->foreign('article_id')->references('id')->on('articles')->cascadeOnDelete();
     });
   }
 

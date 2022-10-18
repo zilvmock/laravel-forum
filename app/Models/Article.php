@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Article extends Model
 {
-  use HasFactory;
+  use HasFactory, Sluggable;
 
-  protected $fillable = ['title', 'content', 'tags', 'up_votes', 'edited_at', 'user_id'];
+  protected $fillable = ['title', 'slug', 'content', 'tags', 'content_updated_at', 'user_id', 'category_id'];
 
   public function user()
   {
@@ -23,13 +25,13 @@ class Article extends Model
 
   public function comment()
   {
-    return $this->hasMany(Comment::class);
+    return $this->hasMany(Comment::class, 'article_id', 'id');
   }
 
-  public function getRouteKeyName()
-  {
-    return 'title';
-  }
+//  public function getRouteKeyName()
+//  {
+//    return 'title';
+//  }
 
   public function isLiked($id): bool
   {
@@ -39,5 +41,19 @@ class Article extends Model
     } else {
       return false;
     }
+  }
+
+  public function getLikes($id): int
+  {
+    return count(ArticleLikes::all()->where('article_id', '==', $id));
+  }
+
+  public function sluggable(): array
+  {
+    return [
+      'slug' => [
+        'source' => 'title'
+      ]
+    ];
   }
 }

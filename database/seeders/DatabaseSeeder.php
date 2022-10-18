@@ -29,6 +29,16 @@ class DatabaseSeeder extends Seeder
     Comment::factory(5)->create();
     ArticleLikes::factory(5)->create();
     CommentLikes::factory(5)->create();
+    $categories = Category::all();
+    $articles = Article::all();
+    foreach ($categories as $category) {
+      $category['slug'] = $category->slug;
+      $category->save();
+    }
+    foreach ($articles as $article) {
+      $article['slug'] = $article->slug;
+      $article->save();
+    }
 //    Article::factory(5)->create();
     //Group::factory(2)->has(Category::factory()->count(2))->create();
 //        Category::factory(5)->create();

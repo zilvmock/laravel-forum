@@ -1,6 +1,6 @@
 @if(session()->has('message'))
   <div x-data="{show: true}" x-init="setTimeout(()=>show=false, 3000)" x-show="show"
-       class="alert alert-success shadow-lg fixed top-4 left-1/2 -translate-x-1/2 w-max">
+       class="alert alert-success shadow-lg fixed top-4 left-1/2 -translate-x-1/2 w-max z-10">
     <div>
       <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
            viewBox="0 0 24 24">

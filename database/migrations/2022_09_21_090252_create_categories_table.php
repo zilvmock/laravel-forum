@@ -13,11 +13,14 @@ return new class extends Migration {
   public function up()
   {
     Schema::create('categories', function (Blueprint $table) {
-      $table->id();
+      $table->increments('id');
+      $table->unsignedInteger('group_id');
       $table->string('title');
-      $table->string('description');
+      $table->string('slug');
+      $table->longText('description');
       $table->timestamps();
-      $table->foreignId('group_id')->constrained();
+//      $table->foreignId('group_id')->constrained();
+      $table->foreign('group_id')->references('id')->on('groups')->cascadeOnDelete();
     });
   }
 

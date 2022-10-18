@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\InvokableRule;
 use Illuminate\Support\Facades\Hash;
 
-class PasswordIsTheSameInvokableRule implements InvokableRule
+class PasswordAreTheSameInvokableRule implements InvokableRule
 {
   /**
    * Run the validation rule.

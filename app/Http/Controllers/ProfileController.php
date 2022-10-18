@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Rules\PasswordIsTheSameInvokableRule;
+use App\Rules\PasswordAreTheSameInvokableRule;
 use App\Rules\PasswordMatchesInvokableRule;
 use App\Rules\UsernameCanBeChangedInvokableRule;
 use Illuminate\Http\Request;
@@ -13,11 +13,13 @@ use Illuminate\Validation\Rules;
 
 class ProfileController extends Controller
 {
-  // Return dashboard views
+  // Views
   // **********************
   public function showProfileView()
   {
-    return view('dashboard/profile');
+
+    return view('dashboard/profile', [
+    ]);
   }
 
   public function showEditProfileView()
@@ -26,28 +28,25 @@ class ProfileController extends Controller
   }
 
   // **********************
-
   public function updateProfile(Request $request)
   {
-    // Check if user is the one trying to update profile.
     if ($request->user()->id != auth()->id()) {
       abort(403, 'Unauthorized action');
     } else {
       $user = $request->user();
     }
-
     $validator = Validator::make($request->all(), [
       'first_name' => ['required', 'max:255'],
       'last_name' => ['required', 'max:255'],
       'avatar' => ['mimes:jpeg,png', 'max:255', 'max:2048'],
       'username' => ['required', 'max:255', Rule::unique('users', 'username')
         ->ignore(auth()->user()->id, 'id'), new UsernameCanBeChangedInvokableRule],
-      'bio' => 'max:255',
+      'bio' => 'max:600',
       'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')
         ->ignore(auth()->user()->id, 'id')],
       'oldPassword' => ['nullable', 'max:255', new PasswordMatchesInvokableRule],
       'password' => [Rule::excludeIf($request->oldPassword == null), 'min:8', 'max:255',
-        Rules\Password::defaults(), new PasswordIsTheSameInvokableRule],
+        Rules\Password::defaults(), new PasswordAreTheSameInvokableRule],
       'password_confirmation' => [Rule::excludeIf($request->oldPassword == null), 'max:255', 'same:password',],
     ], [
       'required' => 'The :attribute field can not be blank!',

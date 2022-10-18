@@ -1,8 +1,0 @@
-trix-toolbar .trix-button-group--file-tools {
-  display: none;
-}
-
-trix-toolbar, trix-editor {
-  background: whitesmoke;
-  color: black;
-}

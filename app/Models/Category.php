@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-  use HasFactory;
+  use HasFactory, Sluggable;
 
-  protected $fillable = ['title', 'description'];
+  protected $fillable = ['title', 'slug', 'description', 'group_id'];
 
   public function group()
   {
@@ -21,8 +22,17 @@ class Category extends Model
     return $this->hasMany(Article::class);
   }
 
-  public function getRouteKeyName()
+//  public function getRouteKeyName()
+//  {
+//    return 'title';
+//  }
+
+  public function sluggable(): array
   {
-    return 'title';
+    return [
+      'slug' => [
+        'source' => 'title'
+      ]
+    ];
   }
 }

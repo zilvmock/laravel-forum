@@ -1,5 +1,5 @@
 <x-app-layout>
-  <div class="flex-row">
+  <div class="grid place-items-center">
     <x-navigation.nav-tabs-profile/>
     <x-layout.card class="p-8 sm:mx-4 mx-0">
       <form method="post" action="{{route('update-profile')}}" enctype="multipart/form-data">
@@ -63,7 +63,7 @@
               <div
                 class="flex font-bold collapse-title bg-neutral text-gray-300 peer-checked:bg-neutral peer-checked:text-gray-300">
                 Change Password
-                <x-icons.daisy.chevron-down/>
+                <x-icons.heroicons.chevron-down/>
               </div>
               <div class="collapse-content bg-neutral text-gray-300 peer-checked:bg-neutral peer-checked:text-gray-300">
                 <div class="divider m-0"></div>
@@ -142,12 +142,6 @@
             @enderror
             {{-- Bio --}}
             <x-input.input-label class="mt-6 font-bold">Bio</x-input.input-label>
-{{--            <div class="p-1">--}}
-{{--              <input id="x" type="hidden" name="bio" value="{{auth()->user()->bio}}"/>--}}
-{{--              <trix-editor input="x" class="trix-content max-h-40 max-w-2xl overflow-auto">--}}
-{{--                <script src="{{ asset('js/trix.js') }}"></script>--}}
-{{--              </trix-editor>--}}
-{{--            </div>--}}
             <x-tinymce.head.tinymce-config/>
             <x-tinymce.forms.tinymce-editor>
               <x-slot:name>bio</x-slot:name>
@@ -162,7 +156,7 @@
                 Save
               </x-input.primary-button>
               <x-input.primary-button class="btn-error mt-4 ml-1 sm:w-48"
-                                      type="">
+                                      type="reset">
                 <a href="{{route('profile')}}">Cancel</a>
               </x-input.primary-button>
             </div>

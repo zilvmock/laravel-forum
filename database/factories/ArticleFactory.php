@@ -12,19 +12,20 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ArticleFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
-    {
-        return [
-          'title' => fake()->text(20),
-          'content' => fake()->text(100),
-          'tags' => 'very, fancy, words',
-          'user_id' => User::all()->random()->id,
-          'category_id' => Category::all()->random()->id,
-        ];
-    }
+  /**
+   * Define the model's default state.
+   *
+   * @return array<string, mixed>
+   */
+  public function definition()
+  {
+    return [
+      'title' => fake()->text(20),
+      'slug' => '',
+      'content' => fake()->text(100),
+      'tags' => 'very, fancy, words',
+      'user_id' => User::all()->random()->id,
+      'category_id' => Category::all()->random()->id,
+    ];
+  }
 }

@@ -13,8 +13,8 @@ return new class extends Migration {
   public function up()
   {
     Schema::create('groups', function (Blueprint $table) {
-      $table->id();
-      $table->string('group_name');
+      $table->increments('id');
+      $table->string('title');
       $table->timestamps();
     });
   }
@@ -26,6 +26,6 @@ return new class extends Migration {
    */
   public function down()
   {
-    Schema::dropIfExists('category_groups');
+    Schema::dropIfExists('groups');
   }
 };
