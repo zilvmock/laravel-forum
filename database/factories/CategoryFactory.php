@@ -19,11 +19,12 @@ class CategoryFactory extends Factory
    */
   public function definition()
   {
+    $title = str_replace('.', '', fake()->unique()->sentence(rand(2, 8)));
     return [
-      'title' => fake()->text(rand(20, 100)),
-      'slug' => '',
-      'description' => fake()->text(rand(100, 200)),
-      'group_id' => Group::factory(),
+      'group_id' => rand(1, config('dbSeedAmounts.groups')),
+      'title' => $title,
+      'slug' => Str::Slug($title),
+      'description' => fake()->sentence(rand(5, 20)),
     ];
   }
 }

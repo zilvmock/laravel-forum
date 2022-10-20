@@ -16,7 +16,7 @@ return new class extends Migration {
       $table->increments('id');
       $table->string('first_name');
       $table->string('last_name');
-      $table->string('avatar')->default('avatars/no-avatar.jpg');
+      $table->string('avatar')->default('avatars/default/no-avatar.jpg');
       $table->string('username')->unique();
       $table->timestamp('username_changed_at')->nullable();
       $table->longText('bio')->nullable();

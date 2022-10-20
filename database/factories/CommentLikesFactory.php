@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentLikesFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
-    {
-        return [
-          'user_id' => User::all()->random()->id,
-          'comment_id' => Comment::all()->random()->id,
-        ];
-    }
+  /**
+   * Define the model's default state.
+   *
+   * @return array<string, mixed>
+   */
+  public function definition()
+  {
+    return [
+      'user_id' => rand(1, config('dbSeedAmounts.users')),
+      'comment_id' => rand(1, config('dbSeedAmounts.comments')),
+    ];
+  }
 }

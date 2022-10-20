@@ -113,20 +113,17 @@
             <div class="avatars p-2">
               <div class="avatar m-2">
                 <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img alt="user avatar" src="{{auth()->user()->avatar ? asset('storage/'.auth()->user()->avatar)
-                                        : asset('storage/avatars/no-avatar.jpg')}}"/>
+                  <img alt="user avatar" src="{{asset('storage/'.auth()->user()->avatar)}}"/>
                 </div>
               </div>
               <div class="avatar m-2">
                 <div class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img alt="user avatar" src="{{auth()->user()->avatar ? asset('storage/'.auth()->user()->avatar)
-                                        : asset('storage/avatars/no-avatar.jpg')}}"/>
+                  <img alt="user avatar" src="{{asset('storage/'.auth()->user()->avatar)}}"/>
                 </div>
               </div>
               <div class="avatar m-2">
                 <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img alt="user avatar" src="{{auth()->user()->avatar ? asset('storage/'.auth()->user()->avatar)
-                                        : asset('storage/avatars/no-avatar.jpg')}}"/>
+                  <img alt="user avatar" src="{{asset('storage/'.auth()->user()->avatar)}}"/>
                 </div>
               </div>
             </div>

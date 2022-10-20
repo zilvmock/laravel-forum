@@ -17,7 +17,7 @@ class GroupFactory extends Factory
   public function definition()
   {
     return [
-      'title' => fake()->word(),
+      'title' => str_replace('.', '', fake()->sentence(rand(2, 5))),
     ];
   }
 }

@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ArticleLikesFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
-    {
-        return [
-          'user_id' => User::all()->random()->id,
-          'article_id' => Article::all()->random()->id,
-        ];
-    }
+  /**
+   * Define the model's default state.
+   *
+   * @return array<string, mixed>
+   */
+  public function definition()
+  {
+    return [
+      'user_id' => rand(1, config('dbSeedAmounts.users')),
+      'article_id' => rand(1, config('dbSeedAmounts.articles')),
+    ];
+  }
 }

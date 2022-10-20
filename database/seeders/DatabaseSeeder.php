@@ -22,28 +22,28 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
-//    User::factory(5)->create();
+    $this->call(UsersSeeder::class);
+    $this->call(GroupsSeeder::class);
+    $this->call(CategoriesSeeder::class);
+    $this->call(ArticlesSeeder::class);
+    $this->call(ArticleLikesSeeder::class);
+    $this->call(CommentsSeeder::class);
+    $this->call(CommentLikesSeeder::class);
 
-//    Group::factory(5)->create();
-    Category::factory(5)->create();
-    Comment::factory(5)->create();
-    ArticleLikes::factory(5)->create();
-    CommentLikes::factory(5)->create();
-    $categories = Category::all();
-    $articles = Article::all();
-    foreach ($categories as $category) {
-      $category['slug'] = $category->slug;
-      $category->save();
-    }
-    foreach ($articles as $article) {
-      $article['slug'] = $article->slug;
-      $article->save();
-    }
-//    Article::factory(5)->create();
-    //Group::factory(2)->has(Category::factory()->count(2))->create();
-//        Category::factory(5)->create();
-    //Category::factory(2)->has(Group::factory()->count(2))->create();
-    // \App\Models\User::factory(10)->create();
-
+    //Old Way
+//    Category::factory(5)->create();
+//    Comment::factory(50)->create();
+//    ArticleLikes::factory(5)->create();
+//    CommentLikes::factory(5)->create();
+//    $categories = Category::all();
+//    $articles = Article::all();
+//    foreach ($categories as $category) {
+//      $category['slug'] = $category->slug;
+//      $category->save();
+//    }
+//    foreach ($articles as $article) {
+//      $article['slug'] = $article->slug;
+//      $article->save();
+//    }
   }
 }

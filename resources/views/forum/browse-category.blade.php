@@ -69,8 +69,7 @@
               <div class="avatar lg:pr-2 pr-0">
                 <div class="w-12 h-12 rounded-full">
                   <img alt="user avatar"
-                       src="{{$latestComment == null ? asset('storage/'.$article->user->avatar)
-                                : asset('storage/'.$latestComment->user->avatar)}}"/>
+                       src="{{$latestComment == null ?? asset('storage/'.$article->user()->avatar)}}"/>
                 </div>
               </div>
               <div class="flex-col pl-2">

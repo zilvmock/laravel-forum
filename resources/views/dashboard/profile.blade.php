@@ -7,8 +7,7 @@
         <div class="row-span-2 text-center p-4">
           <div class="avatar">
             <div class="w-48 rounded-full shadow-lg ring-4 ring-primary ring-offset-base-100 ring-offset-2">
-              <img alt="user avatar" src="{{auth()->user()->avatar ? asset('storage/'.auth()->user()->avatar)
-                                    : asset('storage/avatars/no-avatar.jpg')}}"/>
+              <img alt="user avatar" src="{{asset('storage/'.auth()->user()->avatar)}}"/>
             </div>
           </div>
         </div>

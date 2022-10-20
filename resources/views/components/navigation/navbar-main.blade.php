@@ -14,8 +14,7 @@
           <div class="avatar">
             <div class="w-8 mr-3 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
               <img alt="user avatar"
-                   src="{{auth()->user()->avatar ? asset('storage/'.auth()->user()->avatar)
-                         : asset('storage/avatars/no-avatar.jpg')}}"/>
+                   src="{{asset('storage/'.auth()->user()->avatar)}}"/>
             </div>
           </div>
         </x-slot:image>
