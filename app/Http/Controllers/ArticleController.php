@@ -9,20 +9,17 @@ use App\Rules\StringsAreUniqueInvokableRule;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 class ArticleController extends Controller
 {
   // Return views
   // **********************
-  public function showCreateArticle()
+  public function showCreateArticle($categoryId)
   {
-    $categories = Category::all();
     return view('forum.create-article', [
-      'categories' => $categories,
+      'categoryId' => $categoryId,
     ]);
   }
 
@@ -31,10 +28,8 @@ class ArticleController extends Controller
     if ($request->user()->id != auth()->id()) {
       abort(403, 'Unauthorized action');
     } else {
-      $categories = Category::all();
-      $article = Article::all()->firstWhere('id', '==', $articleId);
+      $article = Article::firstWhere('id', '=', $articleId);
       return view('forum.edit-article', [
-        'categories' => $categories,
         'article' => $article,
       ]);
     }
@@ -44,30 +39,34 @@ class ArticleController extends Controller
   // **********************
   public function storeArticle(Request $request)
   {
-    $slug = SlugService::createSlug(Article::class, 'slug', $request->title);
+    $fields = [
+      'title' => strip_tags(clean($request->title)),
+      'article_content' => strip_tags(clean($request->article_content)),
+      'tags' => strip_tags(clean($request->tags)),
+    ];
+
+    $slug = SlugService::createSlug(Article::class, 'slug', $fields['title']);
     $slugValidator = Validator::make([$slug], [
       'slug' => 'unique:articles'
     ]);
     if ($slugValidator->passes()) {
-      $validator = Validator::make($request->all(), [
+      $validator = Validator::make($fields, [
         'title' => ['required', 'max:100'],
         'article_content' => ['required'],
         'tags' => ['required', 'max:100', new StringsAreUniqueInvokableRule],
-        'categoryId' => ['required']
       ], [
         'required' => 'The :attribute field can not be blank!',
         'tags.required' => 'Article must have at least one tag!',
-        'categoryId.required' => 'Category must be selected!'
       ]);
 
       if ($validator->passes()) {
         $timeNow = Carbon::now();
 
         $articleId = Article::insertGetId([
-          'title' => $request->title,
+          'title' => $fields['title'],
           'slug' => $slug,
-          'content' => $request->article_content,
-          'tags' => $request->tags,
+          'content' => $fields['article_content'],
+          'tags' => $fields['tags'],
           'created_at' => $timeNow,
           'updated_at' => $timeNow,
           'user_id' => auth()->user()->id,
@@ -87,29 +86,33 @@ class ArticleController extends Controller
 
   public function updateArticle(Request $request, $articleId)
   {
-    $validator = Validator::make($request->all(), [
+    $fields = [
+      'title' => strip_tags(clean($request->title)),
+      'article_content' => strip_tags(clean($request->article_content)),
+      'tags' => strip_tags(clean($request->tags)),
+    ];
+
+    $validator = Validator::make($fields, [
       'title' => ['required', 'max:100'],
       'article_content' => ['required'],
       'tags' => ['required', 'max:100', new StringsAreUniqueInvokableRule],
-      'categoryId' => ['required']
     ], [
       'required' => 'The :attribute field can not be blank!',
       'tags.required' => 'Article must have at least one tag!',
-      'categoryId.required' => 'Category must be selected!'
     ]);
 
     if ($validator->passes()) {
       $timeNow = Carbon::now();
-      $article = Article::all()->firstWhere('id', '==', $articleId);
+      $article = Article::firstWhere('id', '=', $articleId);
       $article->update([
-        'title' => $request->title,
-        'content' => $request->article_content,
-        'tags' => $request->tags,
+        'title' => $fields['title'],
+        'slug' => Str::slug($request->title),
+        'content' => $fields['article_content'],
+        'tags' => $fields['tags'],
         'content_updated_at' => $timeNow,
       ]);
-      $article->category_id = $request->categoryId;
       $article->save();
-      return redirect('/forum/browse/' . Category::firstWhere('id', '=', $request->categoryId)->slug . '/' . $article->slug . '/' . $articleId)
+      return redirect('/forum/browse/' . Category::firstWhere('id', '=', $article->category_id)->slug . '/' . $article->slug . '/' . $articleId)
         ->with([
           'article' => Article::all()->firstWhere('id', '==', $articleId),
           'articleComments' => Comment::all()->where('article_id', '==', $articleId),
@@ -120,9 +123,12 @@ class ArticleController extends Controller
   }
   // **********************
   // Delete
-  public function deleteArticle($articleId)
+  public function deleteArticle(Request $request, $articleId)
   {
-    Article::all()->firstWhere('id', '==', $articleId)->delete();
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
+    Article::all()->firstWhere('id', '=', $articleId)->delete();
     return redirect(route('browse'))->with('message', 'Article deleted!');
   }
   // **********************

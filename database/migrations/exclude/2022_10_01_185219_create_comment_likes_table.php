@@ -12,18 +12,15 @@ return new class extends Migration {
    */
   public function up()
   {
-    Schema::create('articles', function (Blueprint $table) {
+    Schema::create('comment_likes', function (Blueprint $table) {
       $table->increments('id');
       $table->unsignedInteger('user_id');
-      $table->unsignedInteger('category_id');
-      $table->string('title');
-      $table->string('slug');
-      $table->longText('content');
-      $table->string('tags')->nullable();
-      $table->timestamp('content_updated_at')->nullable();
-      $table->timestamps();
+      $table->unsignedInteger('comment_id');
+//      $table->foreignId('user_id')->constrained();
       $table->foreign('user_id')->references('id')->on('users');
-      $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
+//      $table->foreignId('comment_id')->constrained()->cascadeOnDelete();
+      $table->foreign('comment_id')->references('id')->on('comments')->cascadeOnDelete();
+      $table->timestamps();
     });
   }
 
@@ -34,6 +31,6 @@ return new class extends Migration {
    */
   public function down()
   {
-    Schema::dropIfExists('article');
+    Schema::dropIfExists('comment_likes');
   }
 };

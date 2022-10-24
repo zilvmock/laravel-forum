@@ -1,11 +1,11 @@
 <x-app-layout>
-  <div class="grid place-items-center">
+  <div class="md:m-4 md:p-2 mt-2 lg:w-9/12 w-full">
     <x-navigation.nav-tabs-profile/>
-    <x-layout.card class="p-8 sm:mx-4 mx-0">
-      <form method="post" action="{{route('update-profile')}}" enctype="multipart/form-data">
+    <x-layout.card class="p-8 md:mx-4 mx-0">
+      <form method="post" action="{{route('update_profile')}}" enctype="multipart/form-data">
         @method('PUT')
         @csrf
-        <div class="flex xs:flex-row flex-col xs:space-x-8 space-x-0 justify-center">
+        <div class="flex sm:flex-row flex-col xs:space-x-8 space-x-0 justify-center">
           <div class="flex flex-col">
             {{-- First Name --}}
             <x-input.input-label for="first_name" class="font-bold">First Name</x-input.input-label>
@@ -139,17 +139,19 @@
             @enderror
             {{-- Bio --}}
             <x-input.input-label class="mt-6 font-bold">Bio</x-input.input-label>
-            <x-tinymce.head.tinymce-config/>
-            <x-tinymce.forms.tinymce-editor>
-              <x-slot:name>bio</x-slot:name>
-              {{auth()->user()->bio}}
-            </x-tinymce.forms.tinymce-editor>
-            @error('bio')
-            <x-informative.error-message class="py-2 mt-2">{{$message}}</x-informative.error-message>
-            @enderror
+            <x-input.editor-with-timeout>
+              <x-tinymce.head.tinymce-config/>
+              <x-tinymce.forms.tinymce-editor>
+                <x-slot:name>bio</x-slot:name>
+                {{auth()->user()->bio}}
+              </x-tinymce.forms.tinymce-editor>
+              @error('bio')
+              <x-informative.error-message class="py-2 mt-2">{{$message}}</x-informative.error-message>
+              @enderror
+            </x-input.editor-with-timeout>
             {{-- Submit --}}
-            <div class="sm:flex-row sm:flex justify-end">
-              <x-input.primary-button class="btn-success mt-4 ml-1 sm:w-48">
+            <div class="flex w-auto h-auto my-auto justify-start">
+              <x-input.primary-button class="btn-success mt-4 mr-2 ml-1 sm:w-48">
                 Save
               </x-input.primary-button>
               <x-input.primary-button class="btn-error mt-4 ml-1 sm:w-48"

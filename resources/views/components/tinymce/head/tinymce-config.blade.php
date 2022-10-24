@@ -2,10 +2,13 @@
         referrerpolicy="origin"></script>
 <script>
   var editor_config = {
-    path_absolute : "/",
+    path_absolute: "/",
     relative_urls: false,
     skin: 'oxide-dark',
     content_css: 'dark',
+    content_style:
+      "@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');" +
+      "body { font-family: 'Ubuntu', sans-serif; }",
     branding: false,
     menubar: false,
     max_width: {{$width ?? 1000}},
@@ -15,9 +18,9 @@
     selector: 'textarea#tinymce',
     plugins: 'code table lists autoresize {{$image ?? ''}}',
     toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code {{$image ?? ''}} | table',
-    file_picker_callback : function(callback, value, meta) {
+    file_picker_callback: function (callback, value, meta) {
       var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
-      var y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight;
+      var y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
 
       var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
       if (meta.filetype === 'image') {
@@ -27,12 +30,12 @@
       }
 
       tinyMCE.activeEditor.windowManager.openUrl({
-        url : cmsURL,
-        title : 'Filemanager',
-        width : x * 0.8,
-        height : y * 0.8,
-        resizable : "yes",
-        close_previous : "no",
+        url: cmsURL,
+        title: 'Filemanager',
+        width: x * 0.8,
+        height: y * 0.8,
+        resizable: "yes",
+        close_previous: "no",
         onMessage: (api, message) => {
           callback(message.content);
         }

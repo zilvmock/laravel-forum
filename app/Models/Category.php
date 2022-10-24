@@ -12,6 +12,8 @@ class Category extends Model
 
   protected $fillable = ['title', 'slug', 'description', 'group_id'];
 
+  protected $with = ['group'];
+
   public function group()
   {
     return $this->belongsTo(Group::class);
@@ -21,11 +23,6 @@ class Category extends Model
   {
     return $this->hasMany(Article::class);
   }
-
-//  public function getRouteKeyName()
-//  {
-//    return 'title';
-//  }
 
   public function sluggable(): array
   {

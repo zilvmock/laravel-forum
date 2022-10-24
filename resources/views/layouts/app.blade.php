@@ -26,7 +26,7 @@
        background-size: cover;
        height: 100%;"
   @endif>
-  <main class="min-h-screen bg-neutral-content/80">
+  <main class="min-h-screen bg-base-content">
     {{--        style="background-image: url({{url('/background/shiny-overlay.svg')}});--}}
     {{--          background-position: center center;--}}
     {{--          background-repeat: no-repeat;--}}
@@ -39,7 +39,7 @@
     @else
       @include('components.navigation.navbar-home')
     @endif
-    <div class="grid place-items-center flex-grow">
+    <div class="grid place-items-center">
       {{-- CONTENT --}}
       {{ $slot }}
     </div>

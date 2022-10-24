@@ -1,16 +1,11 @@
 <x-app-layout>
-  <div class="sm:m-4 sm:p-4 mt-2">
-    <x-layout.card>
-      <x-layout.card class="flex justify-between overflow-hidden bg-secondary/10 mb-2">
-        <div class="flex">
-          <button class="mr-6 btn btn-sm btn-ghost w-max">
-            <a href="{{url()->previous()}}">
-              <x-icons.heroicons.arrow-uturn-left/>
-            </a>
-          </button>
-          <h1 class="text-lg font-bold">Create Group</h1>
-        </div>
-      </x-layout.card>
+  <div class="md:m-4 md:p-2 mt-2 md:w-9/12">
+    <x-layout.card class="rounded-none rounded-t md:rounded">
+      <x-layout.top-bar>
+        <x-slot:title>
+          <h1 class="text-lg font-bold m-0">Create Group</h1>
+        </x-slot:title>
+      </x-layout.top-bar>
       <form action="{{route('store_group')}}" method="post">
         @method('PUT')
         @csrf
@@ -18,7 +13,7 @@
         <div class="bg-secondary/10 rounded p-4 mt-4 text-center">
           <x-input.input-label class="text-lg pl-1">Group Title</x-input.input-label>
           <x-input.text-input class="w-full text-center" maxlength="100" name="title" value="{{old('title')}}"/>
-          <x-input.input-label class="text-md pl-1">* Try to keep it short and specific</x-input.input-label>
+          <x-input.input-label class="text-sm pl-1">* Try to keep it short and specific</x-input.input-label>
           @error('title')
           <x-informative.error-message class="py-2 mt-2">{{$message}}</x-informative.error-message>
           @enderror
@@ -26,12 +21,12 @@
         {{-- Group Categories --}}
         <div class="bg-secondary/10 rounded p-4 mt-4 text-center">
           <x-input.input-label class="text-lg pl-1">Group Categories</x-input.input-label>
-          <x-input.input-label class="text-md pl-1 mb-4">
+          <x-input.input-label class="text-sm pl-1 mb-4">
             All available categories. Disabled (darker ones) are in this group already.
             <u>Categories <b>cannot</b> be unassigned from group, only added to one.</u>
           </x-input.input-label>
-          @if($categories->isNotEmpty())
-            <div class="text-left">
+          @if($categoryData != null)
+            <div class="text-left flex justify-center">
               <table class="table-fixed overflow-y-scroll">
                 <thead class="bg-base-300">
                 <tr>
@@ -43,28 +38,21 @@
                 </tr>
                 </thead>
                 <tbody class="bg-base-100">
-                @foreach($categories as $category)
+                @foreach($categoryData as $category)
                   <tr class="border-b border-secondary/10">
                     <th>
                       <label>
-                        <input id="{{$category->id}}" type="checkbox" class="checkbox checkbox-xs p-2 ml-2"/>
+                        <input id="{{$category['id']}}" type="checkbox" class="checkbox checkbox-xs p-2 ml-2"/>
                       </label>
                     </th>
                     <td class="py-2 pr-6 pl-2">
                       <div>
-                        <div class="font-bold py-1 ml-2">{{$category->title}}</div>
-                        <div class="text-sm opacity-50 ml-2">{{substr($category->description, 0, 50)}}...</div>
+                        <div class="font-bold py-1 ml-2">{{$category['title']}}</div>
+                        <div class="text-sm opacity-50 ml-2">{{substr($category['description'], 0, 50)}}...</div>
                       </div>
                     </td>
-                    @php
-                      $category_articles = $articles->where('category_id', '=', $category->id);
-                      $category_comment_count = 0;
-                        foreach ($category_articles as $article) {
-                            $category_comment_count += count($comments->where('article_id', '=', $article->id));
-                        }
-                    @endphp
-                    <td>{{count($category_articles)}}</td>
-                    <td>{{$category_comment_count}}</td>
+                    <td>{{$category['articleAmount']}}</td>
+                    <td>{{$category['commentAmount']}}</td>
                   </tr>
                 @endforeach
                 </tbody>

@@ -19,9 +19,7 @@ return new class extends Migration {
       $table->longText('content');
       $table->timestamp('content_updated_at')->nullable();
       $table->timestamps();
-//      $table->foreignId('user_id')->constrained();
       $table->foreign('user_id')->references('id')->on('users');
-//      $table->foreignId('article_id')->constrained()->cascadeOnDelete();
       $table->foreign('article_id')->references('id')->on('articles')->cascadeOnDelete();
     });
   }

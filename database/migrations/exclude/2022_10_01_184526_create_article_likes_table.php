@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
   /**
    * Run the migrations.
    *
@@ -13,14 +12,14 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('comment_likes', function (Blueprint $table) {
+    Schema::create('article_likes', function (Blueprint $table) {
       $table->increments('id');
       $table->unsignedInteger('user_id');
-      $table->unsignedInteger('comment_id');
-//      $table->foreignId('user_id')->constrained();
+      $table->unsignedInteger('article_id');
+//        $table->foreignId('user_id')->constrained();
       $table->foreign('user_id')->references('id')->on('users');
-//      $table->foreignId('comment_id')->constrained()->cascadeOnDelete();
-      $table->foreign('comment_id')->references('id')->on('comments')->cascadeOnDelete();
+//        $table->foreignId('article_id')->constrained();
+      $table->foreign('article_id')->references('id')->on('articles')->cascadeOnDelete();
       $table->timestamps();
     });
   }
@@ -32,6 +31,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('comment_likes');
+    Schema::dropIfExists('likes');
   }
 };

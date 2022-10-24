@@ -1,9 +1,7 @@
 <?php return [
-  'users' => 20,
-  'groups' => 10,
-  'categories' => 20,
+  'users' => 10,
+  'groups' => 3,
+  'categories' => 10,
   'articles' => 100,
-  'articleLikes' => 50,
-  'comments' => 1000,
-  'commentLikes' => 500,
+  'comments' => 500,
 ];
