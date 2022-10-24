@@ -7,7 +7,7 @@
     Profile</a>
   <a class="tab tab-lifted
        {{ (request()->segment(2) == 'edit-profile') ? 'tab-active' : 'text-black' }}"
-     href="{{route('edit-profile')}}"
+     href="{{route('edit_profile')}}"
   >
     <x-icons.heroicons.pencil-square/>
     Edit Profile</a>

@@ -10,8 +10,6 @@ use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use function PHPUnit\Framework\isEmpty;
 
 class ForumController extends Controller
 {
@@ -19,30 +17,49 @@ class ForumController extends Controller
   // **********************
   public function showCreateGroup(Request $request)
   {
-    if ($request->user()->id != auth()->id()) {
-      abort(403, 'Unauthorized action');
+    if ($request->user()->id != 1) {
+      return redirect()->route('browse');
     } else {
-      $categories = Category::all();
-      $articles = Article::all();
-      $comments = Comment::all();
+      $categories = Category::select('id', 'title', 'description', 'group_id', 'description')->get();
+      $categoryData = [];
+      foreach ($categories as $category) {
+        $articlesInCategory = Article::select('id', 'title')->where('category_id', $category->id);
+        $commentsInCategory = Comment::select('id')->whereIn('article_id', $articlesInCategory->pluck('id'))->count();
+        $categoryData[] = ([
+          'id' => $category->id,
+          'title' => $category->title,
+          'description' => $category->description,
+          'categoryTitle' => $category->title,
+          'articleAmount' => $articlesInCategory->count(),
+          'commentAmount' => $commentsInCategory,
+        ]);
+      }
+
       return view('forum.manage.create-group', [
-        'categories' => $categories,
-        'articles' => $articles,
-        'comments' => $comments,
+        'categoryData' => $categoryData,
       ]);
     }
   }
 
   public function showCreateCategory(Request $request, $groupId)
   {
-    if ($request->user()->id != auth()->id()) {
-      abort(403, 'Unauthorized action');
+    if ($request->user()->id != 1) {
+      return redirect()->route('browse');
     } else {
-      $articles = Article::all();
-      $comments = Comment::all();
+      $articles = Article::select('id', 'category_id', 'title', 'content')->get();
+      $articleData = [];
+      foreach ($articles as $article) {
+        $articleData[] = ([
+          'id' => $article->id,
+          'category' => $article->category->title,
+          'title' => $article->title,
+          'content' => $article->content,
+          'commentsAmount' => Comment::select()->where('article_id', '=', $article->id)->count(),
+        ]);
+      }
+
       return view('forum.manage.create-category', [
-        'articles' => $articles,
-        'comments' => $comments,
+        'articleData' => $articleData,
         'groupId' => $groupId,
       ]);
     }
@@ -50,20 +67,32 @@ class ForumController extends Controller
 
   public function showEditGroup(Request $request, $groupId)
   {
-    if ($request->user()->id != auth()->id()) {
-      abort(403, 'Unauthorized action');
+    if ($request->user()->id != 1) {
+      return redirect()->route('browse');
     } else {
-      $group = Group::all()->firstWhere('id', '=', $groupId);
-      $categories = Category::all();
-      $groupCategories = Category::all()->where('group_id', '=', $groupId);
-      $articles = Article::all();
-      $comments = Comment::all();
+      $group = Group::select()->where('id', '=', $groupId)->first();
+      $categories = Category::select('id', 'title', 'description', 'group_id', 'description')->get();
+      $groupCategories = $categories->where('group_id', '=', $groupId);
+      $categoryData = [];
+      foreach ($categories as $category) {
+        $articlesInCategory = Article::select('id', 'title')->where('category_id', $category->id);
+        $commentsInCategory = Comment::select('id')->whereIn('article_id', $articlesInCategory->pluck('id'))->count();
+        $categoryData[] = ([
+          'id' => $category->id,
+          'title' => $category->title,
+          'description' => $category->description,
+          'groupCategories' => $groupCategories,
+          'categoryTitle' => $category->title,
+          'articleAmount' => $articlesInCategory->count(),
+          'commentAmount' => $commentsInCategory,
+        ]);
+      }
+
       return view('forum.manage.edit-group', [
-        'group' => $group,
-        'categories' => $categories,
+        'groupId' => $group->id,
+        'groupTitle' => $group->title,
+        'categoryData' => $categoryData,
         'groupCategories' => $groupCategories,
-        'articles' => $articles,
-        'comments' => $comments,
       ]);
     }
   }
@@ -71,17 +100,26 @@ class ForumController extends Controller
   public function showEditCategory(Request $request, $categoryId)
   {
     if ($request->user()->id != auth()->id()) {
-      abort(403, 'Unauthorized action');
+      return redirect()->route('browse');
     } else {
-      $category = Category::firstWhere('id', '=', $categoryId);
-      $categoryArticles = Article::all()->where('category_id', '=', $categoryId);
-      $articles = Article::all();
-      $comments = Comment::all();
+      $categoryData = Category::select('title', 'description')->where('id', '=', $categoryId)->first();
+      $articles = Article::select('id', 'category_id', 'title', 'content')->get();
+      $categoryArticles = $articles->where('category_id', '=', $categoryId);
+      $articleData = [];
+      foreach ($articles as $article) {
+        $articleData[] = ([
+          'id' => $article->id,
+          'category' => $article->category->title,
+          'title' => $article->title,
+          'content' => $article->content,
+          'commentsAmount' => Comment::select()->where('article_id', '=', $article->id)->count(),
+        ]);
+      }
       return view('forum.manage.edit-category', [
-        'category' => $category,
+        'articleData' => $articleData,
+        'categoryId' => $categoryId,
+        'categoryData' => $categoryData,
         'categoryArticles' => $categoryArticles,
-        'articles' => $articles,
-        'comments' => $comments,
       ]);
     }
   }
@@ -89,8 +127,16 @@ class ForumController extends Controller
   // **********************
   public function storeGroup(Request $request)
   {
-    $validator = Validator::make($request->all(), [
-      'title' => ['required', 'max:100'],
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
+
+    $fields = [
+      'title' => strip_tags(clean($request->title)),
+    ];
+
+    $validator = Validator::make($fields, [
+      'title' => ['required', 'max:128'],
     ], [
       'required' => 'The :attribute field can not be blank!',
     ]);
@@ -98,7 +144,7 @@ class ForumController extends Controller
     if ($validator->passes()) {
       $timeNow = Carbon::now();
       $groupId = Group::insertGetId([
-        'title' => $request->title,
+        'title' => $fields['title'],
         'created_at' => $timeNow,
         'updated_at' => $timeNow,
       ]);
@@ -121,13 +167,22 @@ class ForumController extends Controller
 
   public function storeCategory(Request $request, $groupId)
   {
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
+
+    $fields = [
+      'title' => strip_tags(clean($request->title)),
+      'description' => strip_tags(clean($request->description)),
+    ];
+
     $slug = SlugService::createSlug(Category::class, 'slug', $request->title);
     $slugValidator = Validator::make([$slug], [
       'slug' => 'unique:categories'
     ]);
     if ($slugValidator->passes()) {
-      $validator = Validator::make($request->all(), [
-        'title' => ['required', 'max:100'],
+      $validator = Validator::make($fields, [
+        'title' => ['required', 'max:128'],
       ], [
         'required' => 'The :attribute field can not be blank!',
       ]);
@@ -137,9 +192,9 @@ class ForumController extends Controller
         $slug = SlugService::createSlug(Article::class, 'slug', $request->title);
         $categoryId = Category::insertGetId([
           'group_id' => $groupId,
-          'title' => $request->title,
+          'title' => $fields['title'],
           'slug' => $slug,
-          'description' => $request->description,
+          'description' => $fields['description'],
           'created_at' => $timeNow,
           'updated_at' => $timeNow,
         ]);
@@ -163,8 +218,16 @@ class ForumController extends Controller
 
   public function updateGroup(Request $request, $groupId)
   {
-    $validator = Validator::make($request->all(), [
-      'title' => ['required', 'max:100'],
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
+
+    $fields = [
+      'title' => strip_tags(clean($request->title)),
+    ];
+
+    $validator = Validator::make($fields, [
+      'title' => ['required', 'max:128'],
     ], [
       'required' => 'The :attribute field can not be blank!',
     ]);
@@ -172,7 +235,7 @@ class ForumController extends Controller
     if ($validator->passes()) {
       $timeNow = Carbon::now();
       Group::all()->firstWhere('id', '=', $groupId)->update([
-        'title' => $request->title,
+        'title' => $fields['title'],
         'updated_at' => $timeNow,
       ]);
       $categoryIds = explode(',', $request->category_ids);
@@ -194,8 +257,18 @@ class ForumController extends Controller
 
   public function updateCategory(Request $request, $categoryId)
   {
-    $validator = Validator::make($request->all(), [
-      'title' => ['required', 'max:100'],
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
+
+    $fields = [
+      'title' => strip_tags(clean($request->title)),
+      'description' => strip_tags(clean($request->description)),
+    ];
+
+    $validator = Validator::make($fields, [
+      'title' => ['required', 'max:128'],
+      'description' => ['required', 'max:1024'],
     ], [
       'required' => 'The :attribute field can not be blank!',
     ]);
@@ -203,8 +276,8 @@ class ForumController extends Controller
     if ($validator->passes()) {
       $timeNow = Carbon::now();
       Category::all()->firstWhere('id', '=', $categoryId)->update([
-        'title' => $request->title,
-        'description' => $request->description,
+        'title' => $fields['title'],
+        'description' => $fields['description'],
         'updated_at' => $timeNow,
       ]);
       $articleIds = explode(',', $request->article_ids);
@@ -224,27 +297,30 @@ class ForumController extends Controller
     }
   }
 
-  public function deleteGroup($groupId)
+  public function deleteGroup(Request $request, $groupId)
   {
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
     Group::all()->firstWhere('id', '==', $groupId)->delete();
     return redirect()->back()->with('message', 'Group Deleted!');
   }
 
-  public function deleteCategory($categoryId)
+  public function deleteCategory(Request $request, $categoryId)
   {
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
     Category::firstWhere('id', '=', $categoryId)->delete();
     return redirect()->back()->with('message', 'Category Deleted!');
   }
 
-  public function deleteArticle($articleId)
+  public function deleteArticle(Request $request, $articleId)
   {
+    if ($request->user()->role != 1) {
+      abort(403, 'Unauthorized action');
+    }
     Article::firstWhere('id', '=', $articleId)->delete();
-    return redirect()->back()->with('message', 'Article Deleted!');
-  }
-
-  public function deleteComment($commentId)
-  {
-    Comment::firstWhere('id', '=', $commentId)->delete();
     return redirect()->back()->with('message', 'Article Deleted!');
   }
 }

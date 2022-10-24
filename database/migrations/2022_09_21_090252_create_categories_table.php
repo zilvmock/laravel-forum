@@ -19,7 +19,6 @@ return new class extends Migration {
       $table->string('slug');
       $table->longText('description');
       $table->timestamps();
-//      $table->foreignId('group_id')->constrained();
       $table->foreign('group_id')->references('id')->on('groups')->cascadeOnDelete();
     });
   }

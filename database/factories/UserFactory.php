@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Smknstd\FakerPicsumImages\FakerPicsumImagesProvider;

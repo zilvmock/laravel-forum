@@ -44,7 +44,7 @@ class User extends Authenticatable
     return $this->hasMany(Comment::class);
   }
 
-  public function getRole(User $user): string
+  public function getRoleName(User $user): string
   {
     if ($user->role == 1) {
       $role = 'Admin';
@@ -54,25 +54,8 @@ class User extends Authenticatable
     return $role;
   }
 
-  public function getReputation(User $user): int
+  public function scopeWhereUser($query, $userId)
   {
-    $allUserArticles = Article::all()->where('user_id', '==', $user->id);
-    $allUserComments = Comment::all()->where('user_id', '==', $user->id);
-    $rep = 0;
-    foreach ($allUserArticles as $userArticle) {
-      $rep += count(ArticleLikes::all()->where('article_id', '==', $userArticle->id));
-    }
-    foreach ($allUserComments as $userComment) {
-      $rep += count(CommentLikes::all()->where('comment_id', '==', $userComment->id));
-    }
-
-    return $rep;
-  }
-
-  public function getNumOfPosts(User $user): int
-  {
-    $allUserArticlesCount = count(Article::all()->where('user_id', '==', $user->id));
-    $allUserCommentsCount = count(Comment::all()->where('user_id', '==', $user->id));
-    return ($allUserArticlesCount + $allUserCommentsCount);
+    return $query->where('user_id', '=', $userId);
   }
 }

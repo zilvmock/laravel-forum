@@ -4,11 +4,11 @@
       {{$image ?? $image=null}}
     </div>
     <div id="title">
-      <a href="#" class="font-bold">
+      <a href="#" class="hidden md:block font-bold break-all">
         {{$title}}
       </a>
     </div>
-    <div id="icon">
+    <div id="icon block">
       {{$icon ?? ''}}
     </div>
   </label>
@@ -30,7 +30,7 @@
   let icon = document.getElementById('icon');
 
   function changeSize() {
-    let ul = document.getElementById('bc-navbar');
+    //let ul = document.getElementById('bc-navbar');
     if (document.body.scrollWidth <= 540) {
       if ({{$image != null}}) {
         title.classList.add('hidden');

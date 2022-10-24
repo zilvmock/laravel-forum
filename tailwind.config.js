@@ -18,6 +18,18 @@ module.exports = {
         ubuntu: "Ubuntu",
         gemunu: "Gemunu Libre",
       },
+      fontSize: {
+        md: "1rem",
+        "2xl": "1.563rem",
+        "3xl": "1.953rem",
+        "4xl": "2.441rem",
+        "5xl": "3.052rem",
+      },
+      colors: {
+        darkslatedimgray: "rgb(51,51,51)",
+        darkslategray: "#3b3f41",
+        dimgray: "#4f585c",
+      },
     },
     screens: {
       xxs: "410px",
@@ -34,9 +46,5 @@ module.exports = {
     darkTheme: "business",
   },
 
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/typography"),
-    require("daisyui"),
-  ],
+  plugins: [require("@tailwindcss/forms"), require("daisyui")],
 };
