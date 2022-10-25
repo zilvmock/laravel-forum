@@ -53,9 +53,4 @@ class User extends Authenticatable
     }
     return $role;
   }
-
-  public function scopeWhereUser($query, $userId)
-  {
-    return $query->where('user_id', '=', $userId);
-  }
 }

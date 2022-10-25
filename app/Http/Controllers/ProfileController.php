@@ -6,6 +6,7 @@ use App\Rules\PasswordAreTheSameInvokableRule;
 use App\Rules\PasswordMatchesInvokableRule;
 use App\Rules\UsernameCanBeChangedInvokableRule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -35,10 +36,31 @@ class ProfileController extends Controller
     } else {
       $user = $request->user();
     }
-    $validator = Validator::make($request->all(), [
+
+    $fields = [
+      'first_name' => strip_tags(clean($request->first_name)),
+      'last_name' => strip_tags(clean($request->last_name)),
+      'avatar' => $request->avatar,
+      'username' => strip_tags(clean($request->username)),
+      'bio' => $request->bio,
+      'email' => strip_tags(clean($request->email)),
+      'oldPassword' => strip_tags(clean($request->oldPassword)),
+      'password' => strip_tags(clean($request->password)),
+      'password_confirmation' => strip_tags(clean($request->password_confirmation)),
+    ];
+
+    if ($request->hasFile('avatar')) {
+      $avatarValidator = Validator::make($fields, [
+        'avatar' => 'image|mimes:jpeg,png,jpg|max:2048',
+      ]);
+      if ($avatarValidator->fails()) {
+        return back()->withErrors($avatarValidator);
+      }
+    }
+
+    $validator = Validator::make($fields, [
       'first_name' => ['required', 'max:255'],
       'last_name' => ['required', 'max:255'],
-      'avatar' => ['mimes:jpeg,png', 'max:255', 'max:2048'],
       'username' => ['required', 'max:255', Rule::unique('users', 'username')
         ->ignore(auth()->user()->id, 'id'), new UsernameCanBeChangedInvokableRule],
       'bio' => 'max:600',
@@ -58,15 +80,17 @@ class ProfileController extends Controller
       // Old password field must be entered and pass the validator.
       // Otherwise, without this 'if' it would be re-hashed and changed every time.
       if ($request->input('oldPassword') != null) {
-        $formFields = $request->except(['oldPassword', 'password_confirmation']);
+        $fields = Arr::except($fields, ['oldPassword', 'password_confirmation']);
         $formFields['password'] = Hash::make($request->password);
       } else {
-        $formFields = $request->except(['oldPassword', 'password', 'password_confirmation']);
+        $fields = Arr::except($fields, ['oldPassword', 'password', 'password_confirmation']);
       }
       if ($request->hasFile('avatar')) {
-        $user->avatar = $request->file('avatar')->store('avatars', 'public');
+        $fields['avatar'] = $request->file('avatar')->store('avatars', 'public');;
+      } else {
+        $fields['avatar'] = $user->avatar;
       }
-      $user->update($formFields);
+      $user->update($fields);
       return back()->with('message', 'Profile has been updated!');
     } else {
       if ($validator->errors()->hasAny('oldPassword', 'password', 'password_confirmation')) {

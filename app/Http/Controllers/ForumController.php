@@ -17,7 +17,7 @@ class ForumController extends Controller
   // **********************
   public function showCreateGroup(Request $request)
   {
-    if ($request->user()->id != 1) {
+    if ($request->user()->role != 1) {
       return redirect()->route('browse');
     } else {
       $categories = Category::select('id', 'title', 'description', 'group_id', 'description')->get();
@@ -43,7 +43,7 @@ class ForumController extends Controller
 
   public function showCreateCategory(Request $request, $groupId)
   {
-    if ($request->user()->id != 1) {
+    if ($request->user()->role != 1) {
       return redirect()->route('browse');
     } else {
       $articles = Article::select('id', 'category_id', 'title', 'content')->get();
@@ -67,7 +67,7 @@ class ForumController extends Controller
 
   public function showEditGroup(Request $request, $groupId)
   {
-    if ($request->user()->id != 1) {
+    if ($request->user()->role != 1) {
       return redirect()->route('browse');
     } else {
       $group = Group::select()->where('id', '=', $groupId)->first();
@@ -99,7 +99,7 @@ class ForumController extends Controller
 
   public function showEditCategory(Request $request, $categoryId)
   {
-    if ($request->user()->id != auth()->id()) {
+    if ($request->user()->role != 1) {
       return redirect()->route('browse');
     } else {
       $categoryData = Category::select('title', 'description')->where('id', '=', $categoryId)->first();
@@ -176,43 +176,38 @@ class ForumController extends Controller
       'description' => strip_tags(clean($request->description)),
     ];
 
-    $slug = SlugService::createSlug(Category::class, 'slug', $request->title);
-    $slugValidator = Validator::make([$slug], [
-      'slug' => 'unique:categories'
+    $validator = Validator::make($fields, [
+      'title' => ['required', 'max:128'],
+      'description' => ['required', 'max:255'],
+    ], [
+      'required' => 'The :attribute field can not be blank!',
     ]);
-    if ($slugValidator->passes()) {
-      $validator = Validator::make($fields, [
-        'title' => ['required', 'max:128'],
-      ], [
-        'required' => 'The :attribute field can not be blank!',
-      ]);
 
-      if ($validator->passes()) {
-        $timeNow = Carbon::now();
-        $slug = SlugService::createSlug(Article::class, 'slug', $request->title);
-        $categoryId = Category::insertGetId([
-          'group_id' => $groupId,
-          'title' => $fields['title'],
-          'slug' => $slug,
-          'description' => $fields['description'],
-          'created_at' => $timeNow,
-          'updated_at' => $timeNow,
-        ]);
-        $articleIds = explode(',', $request->article_ids);
-        if (!empty($articleIds)) {
-          foreach ($articleIds as $articleId) {
-            $article = Article::all()->firstWhere('id', '=', $articleId);
-            if ($article == null) {
-              break;
-            }
-            $article->category_id = $categoryId;
-            $article->save();
+    if ($validator->passes()) {
+      $timeNow = Carbon::now();
+      $slug = SlugService::createSlug(Article::class, 'slug', $fields['title']);
+      $categoryId = Category::insertGetId([
+        'group_id' => $groupId,
+        'title' => $fields['title'],
+        'slug' => $slug,
+        'description' => $fields['description'],
+        'created_at' => $timeNow,
+        'updated_at' => $timeNow,
+      ]);
+      $articleIds = explode(',', $request->article_ids);
+      if (!empty($articleIds)) {
+        foreach ($articleIds as $articleId) {
+          $article = Article::all()->firstWhere('id', '=', $articleId);
+          if ($article == null) {
+            break;
           }
+          $article->category_id = $categoryId;
+          $article->save();
         }
-        return redirect(route('browse'))->with('message', 'Category Created!');
-      } else {
-        return redirect()->back()->withInput()->withErrors($validator);
       }
+      return redirect(route('browse'))->with('message', 'Category Created!');
+    } else {
+      return redirect()->back()->withInput()->withErrors($validator);
     }
   }
 

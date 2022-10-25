@@ -27,17 +27,12 @@
        height: 100%;"
   @endif>
   <main class="min-h-screen bg-base-content">
-    {{--        style="background-image: url({{url('/background/shiny-overlay.svg')}});--}}
-    {{--          background-position: center center;--}}
-    {{--          background-repeat: no-repeat;--}}
-    {{--          background-size: cover;--}}
-    {{--          height: 100%;">--}}
     <x-informative.flash-message-success/>
     {{-- NAVBAR --}}
-    @if (!(request()->is('/')))
-      @include('components.navigation.navbar-main')
-    @else
+    @if (request()->is('/') || request()->is('about-us'))
       @include('components.navigation.navbar-home')
+    @else
+      @include('components.navigation.navbar-main')
     @endif
     <div class="grid place-items-center">
       {{-- CONTENT --}}

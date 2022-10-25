@@ -14,7 +14,7 @@ class CommentController extends Controller
   public function editComment(Request $request, $commentId)
   {
     $fields = [
-      'comment' => strip_tags(clean($request->edit_comment)),
+      'comment' => $request->edit_comment,
     ];
 
     if ($request->user()->id != auth()->id()) {
@@ -45,7 +45,7 @@ class CommentController extends Controller
   public function storeComment(Request $request, $articleId)
   {
     $fields = [
-      'comment' => strip_tags(clean($request->comment)),
+      'comment' => $request->comment,
     ];
 
     $validator = Validator::make($fields, [

@@ -61,7 +61,7 @@
                     </th>
                     <td class="py-2 pr-6 pl-2">
                       <div class="font-bold py-1 ml-2">{{$article['title']}}</div>
-                      <div class="text-sm opacity-50 ml-2">{!!substr($article['content'], 0, 50)!!}...</div>
+                      <div class="text-sm opacity-50 ml-2">{{strip_tags(substr($article['content'], 0, 50))}}...</div>
                     </td>
                     <td class="px-2">{{$article['category']}}</td>
                     <td class="px-2">{{$article['commentsAmount']}}</td>
